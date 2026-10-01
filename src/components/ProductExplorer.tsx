@@ -10,25 +10,25 @@ type LoadState = "loading" | "error" | "ready";
 
 export default function ProductExplorer() {
     const [products, setProducts] = useState<Product[]>([]);
-    const [status, setStatus] = useState<LoadState>("loading");
+    const [status, setStatus] = useState<LoadState>("loading"); 
     const [errorMessage, setErrorMessage] = useState("");
-    const [editing, setEditing] = useState<Product | null>(null);
+    const [editing, setEditing] = useState<Product | null>(null); // สถานะของสินค้าที่กำลังแก้ไข (null = เพิ่มใหม่)
 
     useEffect(() => {
         fetchProducts(defaultQuery).then(showResult).catch(showError);
-    }, []);
+    }, []); // โหลดข้อมูลเริ่มต้นเมื่อคอมโพเนนต์ถูกสร้าง
 
     function showResult(list: ProductList) {
         setProducts(list.products);
         setStatus("ready");
-        console.log(`พบสินค้า ${list.total} รายการ`, list.products);
+        console.log(`พบสินค้า ${list.total} รายการ`, list.products); 
     }
 
     function showError(error: unknown) {
         setErrorMessage(
             error instanceof Error ? error.message : "เรียกข้อมูลไม่สำเร็จ"
         );
-        setStatus("error");
+        setStatus("error"); 
     }
 
     async function loadProducts(query: SearchQuery) {
@@ -39,12 +39,12 @@ export default function ProductExplorer() {
             showResult(await fetchProducts(query));
         } catch (error) {
             showError(error);
-        }
+        } 
     }
 
     function saveProduct(draft: ProductDraft) {
         if (editing) {
-            // กรณีแก้ไข: อัปเดตตัวเดิมใน Array
+            // กรณีแก้ไขสินค้า
             setProducts(products.map(p => p.id === editing.id ? { ...editing, ...draft } : p));
             setEditing(null); // กลับสู่โหมดเพิ่มใหม่
         } else {

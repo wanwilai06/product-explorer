@@ -7,19 +7,19 @@ import { CATEGORIES, ProductDraftSchema } from "@/lib/products";
 import type { Product, ProductDraft } from "@/lib/products";
 
 type ProductFormProps = {
-    editing: Product | null;
-    onSave: (draft: ProductDraft) => void;
-    onCancel: () => void;
+    editing: Product | null; // ถ้าเป็น null = เพิ่มสินค้าใหม่, ถ้าไม่ null = แก้ไขสินค้า
+    onSave: (draft: ProductDraft) => void; // เรียกเมื่อบันทึกข้อมูลสินค้า
+    onCancel: () => void; // เรียกเมื่อยกเลิกการแก้ไข
 };
 
 export default function ProductForm(
     { editing, onSave, onCancel }: ProductFormProps
 ) {
     const {
-        register,
-        handleSubmit,
+        register, // เชื่อม input กับ react-hook-form (อ่านค่าและตรวจสอบ)
+        handleSubmit, // ครอบตอนกด Submit จะทำงานเมื่อข้อมูลผ่านเกณฑ์ Validation เท่านั้น
         reset,
-        formState: { errors, isDirty, isValid },
+        formState: { errors, isDirty, isValid }, // ตรวจสอบว่ามีการแก้ไขข้อมูลรึยัง และข้อมูลผ่านเกณฑ์มั้ย
     } = useForm<ProductDraft>({
         resolver: zodResolver(ProductDraftSchema),
         mode: "onTouched",
@@ -42,11 +42,11 @@ export default function ProductForm(
                 stock: editing.stock,
                 category: editing.category,
                 rating: editing.rating ?? 0,
-            });
+            }); // ถ้าแก้ไขสินค้า ให้สินค้าเติมใส่ฟอร์มโดยอัตโนมัติ
         } else {
             reset({ title: "", price: undefined, stock: undefined, category: "" as any, rating: 0 });
         }
-    }, [editing, reset]);
+    }, [editing, reset]); 
 
     const inputStyle = {
         width: '100%', 
@@ -78,8 +78,8 @@ export default function ProductForm(
                 }}
             >
                 <h3 style={{ margin: '0 0 5px 0', fontSize: '16px', fontWeight: '600', color: '#333' }}>
-                    {editing ? "แก้ไขข้อมูลสินค้า" : "เพิ่มสินค้าใหม่"}
-                </h3>
+                    {editing ? "แก้ไขข้อมูลสินค้า" : "เพิ่มสินค้าใหม่"} 
+                </h3> 
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '15px' }}>
                     {/* ชื่อสินค้า */}
@@ -157,7 +157,7 @@ export default function ProductForm(
                 <div style={{ display: 'flex', gap: '10px', marginTop: '5px' }}>
                     <button
                         type="submit"
-                        disabled={!isDirty || !isValid}
+                        disabled={!isDirty || !isValid} // ปุ่มจะถูกปิดใช้งานถ้าไม่มีการแก้ไขข้อมูล หรือข้อมูลไม่ผ่าน
                         style={{
                             padding: '9px 24px',
                             borderRadius: '4px',
